@@ -1,45 +1,20 @@
 import { useEffect, useState } from "react";
 import { Person } from "./Person";
-
-function SearchBar({setSearchQuery}){
-    
-const handleSubmit = (e) => {
-    e.preventDefault(); //is required - otherwise response is sent to URL.
-   
-
-    const form = e.target; 
-
-    //constructing response data format
-    const formData = new FormData(form);
-    const formJson = Object.fromEntries(formData.entries());
-    
-    console.log("The query submitted is:", formJson.query);
-    setSearchQuery(formJson.query);
-    }
-
-    return( 
-
-<div>
-<h3>Person Search</h3>
-
-<form onSubmit={handleSubmit}>
-    <input name="query"></input>
-    <button type="submit"> Search</button>
-</form>
-</div>
-
-);
-}
-
-
+import { Pagination } from "./Pagination";
 
 export function Search(){
+
 const [searchQuery, setSearchQuery] = useState(""); 
 const [searchResult, setSearchResult] = useState([]); 
 const [error, setError] = useState(null); // for future implementation
 const [loading, setLoading] = useState(false); // for future implementation
 
-
+const [currentPage, setCurrentPage] = useState(1);
+const [totalResults, setTotalResults] = useState(0);
+    
+const onPageChange = (newPage) => {
+    setCurrentPage(newPage); // Update the page number
+  };
     
 
     useEffect(() => {
@@ -54,17 +29,20 @@ const [loading, setLoading] = useState(false); // for future implementation
 
     return res.json();
     })
-    .then((data) => setSearchResult(data.results))
+    .then((data) => {setSearchResult(data.results);
+        setTotalResults(data.results.length); 
+    })
     .then(() => {
-        setLoading(false)
+        setLoading(false);
         console.log("loading", loading);
     });
-
     }
-},   [searchQuery]);
+},   [searchQuery, currentPage]);
 
+    
     console.log("Search was ran", searchResult);
-
+    console.log("search result count", totalResults);
+   
     return(
         <div>
             <SearchBar setSearchQuery={setSearchQuery}/>
@@ -73,10 +51,47 @@ const [loading, setLoading] = useState(false); // for future implementation
                             {searchResult.map((result) => (
                                 <div key={result.id}>
                                     <Person person={result}/>
+                              
                                 </div>
+                                
                             ))}
             </ul>    
+            <Pagination searchResultLen = {totalResults} currentPage={ currentPage} onpagechange={onPageChange}/>
             </div>
         </div> 
     );
 }
+
+
+function SearchBar({setSearchQuery}){
+    
+    const handleSubmit = (e) => {
+        e.preventDefault(); //is required - otherwise response is sent to URL.
+       
+    
+        const form = e.target; 
+    
+        //constructing response data format
+        const formData = new FormData(form);
+        const formJson = Object.fromEntries(formData.entries());
+        
+        console.log("The query submitted is:", formJson.query);
+        setSearchQuery(formJson.query);
+        }
+    
+        return( 
+    
+    <div>
+    <h3>Person Search</h3>
+    
+    <form onSubmit={handleSubmit}>
+        <input name="query"></input>
+        <button type="submit"> Search</button>
+    </form>
+    </div>
+    
+    );
+    }
+    
+
+    
