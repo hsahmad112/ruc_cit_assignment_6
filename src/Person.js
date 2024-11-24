@@ -1,18 +1,12 @@
-function Person(name, knownForDepartment){
-    return(<div> <Person> </Person></div>);
 
+
+export function Person({person}){ //component takes object person as a parameter
+    return(<div> 
+      <p> Name: {person.name} </p> {/*using the parameter object  to access values*/}
+      <p> Job: {person.known_for_department} </p>
+      <hr/>
+
+    </div>);
 }
 
 
-
-
-
-function PersonSearch({person}){
-    const [person, setPerson] = useState([]);
-   
-  return(
-    <div>
-      <PersonSearch></PersonSearch>
-    </div>
-  );
-}

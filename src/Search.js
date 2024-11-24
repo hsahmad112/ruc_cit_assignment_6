@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Person } from "./Person";
 
 function SearchBar({setSearchQuery}){
     
@@ -16,10 +17,17 @@ const handleSubmit = (e) => {
     setSearchQuery(formJson.query);
     }
 
-    return( <form onSubmit={handleSubmit}>
+    return( 
+
+<div>
+<h3>Person Search</h3>
+
+<form onSubmit={handleSubmit}>
     <input name="query"></input>
     <button type="submit"> Search</button>
 </form>
+</div>
+
 );
 }
 
@@ -30,6 +38,7 @@ const [searchQuery, setSearchQuery] = useState("");
 const [searchResult, setSearchResult] = useState([]); 
 const [error, setError] = useState(null); // for future implementation
 const [loading, setLoading] = useState(false); // for future implementation
+
 
     
 
@@ -62,10 +71,9 @@ const [loading, setLoading] = useState(false); // for future implementation
             <div>
             <ul>
                             {searchResult.map((result) => (
-                                <p key={result.id}>
-                                    <strong>{result.name}</strong>
-                                    <strong> {result.known_for_department}</strong> 
-                                </p>
+                                <div key={result.id}>
+                                    <Person person={result}/>
+                                </div>
                             ))}
             </ul>    
             </div>
